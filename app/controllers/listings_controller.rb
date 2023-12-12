@@ -6,6 +6,13 @@ class ListingsController < ApplicationController
     end
   end
 
+  def show
+    listing = Listing.find(params[:id])
+    respond_to do |format|
+      format.json { render json: listing }
+    end
+  end
+
   def create
     listing = Listing.new(listing_params)
     if listing.save
