@@ -24,6 +24,12 @@ class ListingsController < ApplicationController
     end
   end
 
+  def destroy
+    listing = Listing.find(params[:id])
+    listing.destroy
+    head 204
+  end
+
   private
 
   def listing_params
