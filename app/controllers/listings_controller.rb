@@ -15,6 +15,15 @@ class ListingsController < ApplicationController
     end
   end
 
+  def update
+    listing = Listing.find(params[:id])
+    if listing.update(listing_params)
+      render json: listing, status: 200
+    else
+      render json: { errors: listing.errors }, status: 422
+    end
+  end
+
   private
 
   def listing_params
