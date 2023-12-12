@@ -1,16 +1,10 @@
 class ListingsController < ApplicationController
   def index
-    response = { listings: Listing.all }
-    respond_to do |format|
-      format.json { render json: response }
-    end
+    render json: { listings: Listing.all }
   end
 
   def show
-    listing = Listing.find(params[:id])
-    respond_to do |format|
-      format.json { render json: listing }
-    end
+    render json: Listing.find(params[:id])
   end
 
   def create
