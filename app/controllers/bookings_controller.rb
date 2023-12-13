@@ -16,8 +16,7 @@ class BookingsController < ApplicationController
   end
 
   def update
-    listing = Listing.find(params[:listing_id])
-    booking = listing.bookings.find(params[:id])
+    booking = Booking.find(params[:id])
     if booking.update(booking_params)
       render json: { booking: }, status: :ok
     else
@@ -26,8 +25,7 @@ class BookingsController < ApplicationController
   end
 
   def destroy
-    listing = Listing.find(params[:listing_id])
-    booking = listing.bookings.find(params[:id])
+    booking = Booking.find(params[:id])
     booking.destroy
     head 204
   end

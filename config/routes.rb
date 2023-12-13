@@ -4,8 +4,9 @@ Rails.application.routes.draw do
   get 'up' => 'rails/health#show', as: :rails_health_check
 
   resources :listings, only: %i[index show create update destroy] do
-    resources :bookings, only: %i[index create update destroy]
+    resources :bookings, only: %i[index create]
     resources :reservations, only: %i[index create]
   end
+  resources :bookings, only: %i[update destroy]
   resources :reservations, only: %i[update destroy]
 end
