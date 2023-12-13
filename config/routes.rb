@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :listings, only: %i[index show create update destroy] do
     resources :bookings, only: %i[index create]
     resources :reservations, only: %i[index create]
+    resources :missions, only: :index
   end
   resources :bookings, only: %i[update destroy]
   resources :reservations, only: %i[update destroy]
