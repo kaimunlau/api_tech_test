@@ -21,6 +21,12 @@ class ReservationsController < ApplicationController
     end
   end
 
+  def destroy
+    reservation = Reservation.find(params[:id])
+    reservation.destroy
+    head 204
+  end
+
   private
 
   def handle_response(listing, reservation, overlapping_reservations)
