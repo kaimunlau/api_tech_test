@@ -7,18 +7,28 @@ class ReservationsController < ApplicationController
 
   def create
     listing = Listing.find(params[:listing_id])
-    reservation = listing.reservations.create(reservation_params)
+    reservation = Reservation.new(reservation_params)
     overlapping_reservations = find_overlapping_reservations(listing, reservation)
-    handle_response(reservation, overlapping_reservations)
+    handle_response(listing, reservation, overlapping_reservations)
+  end
+
+  def update
+    reservation = Reservation.find(params[:id])
+    if reservation.update(reservation_params)
+      render json: { reservation: }, status: :ok
+    else
+      render json: { errors: reservation.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private
 
-  def handle_response(reservation, overlapping_reservations)
-    if valid_reservation?(reservation, overlapping_reservations)
-      handle_valid_reservation(reservation)
-    elsif overlapping_reservations.present?
+  def handle_response(listing, reservation, overlapping_reservations)
+    if overlapping_reservations.present?
       render json: { errors: 'Dates already reserved' }, status: :unprocessable_entity
+    elsif valid_reservation?(listing, reservation)
+      reservation.listing = listing
+      handle_valid_reservation(reservation)
     else
       render json: { errors: 'Dates unavailable' }, status: :unprocessable_entity
     end
@@ -41,10 +51,9 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def valid_reservation?(reservation, overlapping_reservations)
-    available_dates = reservation.listing.bookings.map { |booking| booking.start_date..booking.end_date }
-    overlapping_reservations.empty? &&
-      available_dates.any? { |range| range.include?(reservation.start_date) || range.include?(reservation.end_date) }
+  def valid_reservation?(listing, reservation)
+    available_dates = listing.bookings.map { |booking| booking.start_date..booking.end_date }
+    available_dates.any? { |range| range.include?(reservation.start_date) || range.include?(reservation.end_date) }
   end
 
   def reservation_params
